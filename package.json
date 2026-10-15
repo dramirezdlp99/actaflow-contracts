@@ -1,0 +1,25 @@
+{
+  "name": "actaflow-contracts",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "@bufbuild/buf": "1.73.0",
+    "@bufbuild/protobuf": "2.16.0",
+    "@bufbuild/protovalidate": "1.3.0"
+  },
+  "description": "ActaFlow - contratos gRPC (Contract-First): fuente unica de verdad",
+  "type": "module",
+  "scripts": {
+    "build": "buf build",
+    "lint": "buf lint",
+    "format": "buf format -w",
+    "format:check": "buf format --diff --exit-code",
+    "docs": "node scripts/generate-docs.mjs",
+    "docs:check": "node scripts/generate-docs.mjs --check",
+    "test": "node --test tests/generate-docs.test.mjs tests/contract-rules.test.mjs tests/payload-size.test.mjs tests/contracts-tool.test.mjs",
+    "verify": "npm run format:check && npm run lint && npm run build && npm run docs:check && npm test"
+  },
+  "engines": {
+    "node": ">=20.9"
+  }
+}
