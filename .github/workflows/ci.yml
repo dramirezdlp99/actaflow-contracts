@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  contratos:
+    name: Formato, lint, compatibilidad, documentacion y reglas
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Historia completa: buf breaking compara contra commits anteriores.
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Instalar dependencias
+        run: npm ci
+      - name: Formato canonico
+        run: npm run format:check
+      - name: Lint (STANDARD + COMMENTS + reglas protovalidate)
+        run: npm run lint
+      - name: Compilacion
+        run: npm run build
+      - name: Compatibilidad con la version anterior (WIRE_JSON)
+        env:
+          BEFORE: ${{ github.event.before }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if [ -n "$BASE_REF" ]; then
+            CONTRA="origin/$BASE_REF"
+          elif [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            CONTRA="$BEFORE"
+          else
+            echo "Primer push del repositorio: no hay version anterior con la cual comparar."
+            exit 0
+          fi
+          if ! git ls-tree -r --name-only "$CONTRA" | grep -q '^buf.yaml$'; then
+            echo "La version anterior todavia no tenia contratos."
+            exit 0
+          fi
+          echo "Comparando contra $CONTRA"
+          npx buf breaking --against ".git#ref=$CONTRA"
+      - name: Documentacion al dia
+        run: npm run docs:check
+      - name: Tests de las reglas del contrato
+        run: npm test
