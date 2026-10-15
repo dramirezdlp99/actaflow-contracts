@@ -1963,6 +1963,7 @@ Response of InviteMember.
 |---|---|---|---|---|
 | 1 | `invitation_id` | `string` |  | Invitation identifier. |
 | 2 | `expires_at` | `google.protobuf.Timestamp` |  | When it expires. |
+| 3 | `invitation_token` | `string` |  | Single-use secret the invitee needs to register. Returned only once, to the admin who invites: the server stores just its hash. There is no email service, so the admin shares the registration link through a channel they trust. |
 
 #### Message `ChangeMemberRoleRequest`
 
