@@ -1,0 +1,20 @@
+# ActaFlow - contratos. Fuente unica de verdad de la comunicacion entre servicios.
+version: v2
+modules:
+  - path: proto
+    name: buf.build/actaflow/contracts
+lint:
+  use:
+    - STANDARD
+    # Cada servicio, RPC, mensaje, campo, enum y valor debe tener comentario:
+    # la documentacion de la API se genera a partir de ellos.
+    - COMMENTS
+  ignore:
+    # Copia fiel de protovalidate (Buf Technologies, Apache-2.0); no es nuestro estilo.
+    - proto/buf
+breaking:
+  use:
+    # Protege a los clientes ya desplegados: nada que rompa el formato binario ni el JSON.
+    - WIRE_JSON
+  ignore:
+    - proto/buf
