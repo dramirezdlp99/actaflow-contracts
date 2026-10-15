@@ -36,6 +36,20 @@ Equivalencias con lo visto en clase:
 jOOQ entra con las primeras tablas de negocio (las de identidad, en el bloque BE-2). Hasta
 entonces, la única tabla propia es la cola de trabajos.
 
+> **Enmienda (v0.2.0, bloque BE-2).** identity-service salió con **JDBC directo** en lugar de
+> jOOQ. Motivo: la generación de jOOQ necesita la base (o un *parser* de DDL) dentro del build,
+> y esa pieza no se pudo verificar antes de entregar; preferimos no publicar un eslabón que no
+> se comprobó. Lo que lo reemplaza en la cadena de confianza:
+>
+> - Todo el SQL vive en las clases de aplicación y cada entidad se convierte al mensaje
+>   protobuf en **un solo lugar** (por ejemplo `Cuentas.contrato`), así que el contrato sigue
+>   obligando en compilación del lado de la respuesta.
+> - **Cada consulta se ejecuta en los tests de integración** contra PostgreSQL real con la
+>   migración Flyway aplicada: si una columna cambia de nombre o de tipo, falla `mvnw verify`
+>   (en tiempo de test, no de compilación; esa es la diferencia honesta con jOOQ).
+>
+> jOOQ sigue siendo la opción prevista; adoptarlo no cambia ningún contrato.
+
 Si el *resolver* del backend devuelve algo que no coincide con el contrato, **falla la
 compilación de Java**. Si el frontend usa un campo que el contrato no tiene, **falla la
 compilación de TypeScript**.
