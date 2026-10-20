@@ -13,7 +13,7 @@ repositorios generan su código a partir de una versión publicada de este:
 | `actaflow-backend` | Mensajes Java y bases de servicio | `protoc` 3.25.8 + `protoc-gen-grpc-java` 1.84.3 (Maven) |
 | `actaflow-ai-engine` | Mensajes y servicios Python | `grpcio-tools` |
 
-**14 paquetes, 20 servicios y 74 RPC.** La referencia completa está en
+**14 paquetes, 20 servicios y 76 RPC.** La referencia completa está en
 [`docs/api-reference.md`](docs/api-reference.md), generada desde los comentarios de los `.proto`.
 
 ## Estructura
