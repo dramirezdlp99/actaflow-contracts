@@ -107,3 +107,26 @@ test('RunBenchmarkRequest: modelos definidos y sin repetir', () => {
   assert.notDeepEqual(validar(tipo, { models: [1, 1] }), [])
   assert.notDeepEqual(validar(tipo, { models: [0] }), [])
 })
+
+test('ConfirmPresenceRequest: codigo de 6 digitos y proposito en minusculas', () => {
+  const tipo = 'actaflow.identity.v1.ConfirmPresenceRequest'
+  const proposito = `accept-minute:${UUID}:${'a'.repeat(64)}`
+  assert.deepEqual(validar(tipo, { totpCode: '123456', purpose: proposito }), [])
+  assert.notDeepEqual(validar(tipo, { totpCode: '123456', purpose: '' }), [])
+  assert.notDeepEqual(validar(tipo, { totpCode: '123456', purpose: 'Aceptar Acta' }), [])
+  assert.notDeepEqual(validar(tipo, { totpCode: '12a456', purpose: proposito }), [])
+})
+
+test('AcceptFinalDocumentRequest: exige la prueba de presencia de identity', () => {
+  const tipo = 'actaflow.minutes.v1.AcceptFinalDocumentRequest'
+  const base = { documentId: UUID, sha256Hex: 'f'.repeat(64), totpCode: '654321' }
+  assert.deepEqual(validar(tipo, { ...base, presenceToken: 'a.b.c' }), [])
+  assert.notDeepEqual(validar(tipo, base), [])
+  assert.notDeepEqual(validar(tipo, { ...base, sha256Hex: 'F'.repeat(64), presenceToken: 'a.b.c' }), [])
+})
+
+test('FinalContent y RenderMinutePdfRequest: contenido no vacio y sobre obligatorio', () => {
+  assert.deepEqual(validar('actaflow.minutes.v1.FinalContent', { title: 'Acta', html: '<p>x</p>' }), [])
+  assert.notDeepEqual(validar('actaflow.minutes.v1.FinalContent', { title: 'Acta', html: '' }), [])
+  assert.notDeepEqual(validar('actaflow.engine.v1.RenderMinutePdfRequest', { caseId: UUID, minuteId: UUID }), [])
+})
