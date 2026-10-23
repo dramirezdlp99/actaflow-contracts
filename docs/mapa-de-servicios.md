@@ -31,6 +31,7 @@ Navegador ◄═════ WebSocket (tramas protobuf, ticket de un solo uso) 
 | `ProcessorKeyService` | `actaflow.crypto.v1` | legal-case-service, ai-engine | BFF; legal-case-service (al motor) |
 | `TranscriptionService` | `actaflow.engine.v1` | ai-engine | legal-case-service |
 | `ExtractionService` | `actaflow.engine.v1` | ai-engine | legal-case-service |
+| `DocumentService` | `actaflow.engine.v1` | ai-engine (procesador de documentos) | legal-case-service |
 | `EngineDiagnosticsService` | `actaflow.engine.v1` | ai-engine | script de mediciones |
 
 Los paquetes `actaflow.common.v1` y `actaflow.legal.v1` solo definen tipos compartidos, no
